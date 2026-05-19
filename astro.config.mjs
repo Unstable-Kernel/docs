@@ -2,8 +2,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 export default defineConfig({
-  site: 'https://unstable-kernel.github.io',
-  base: '/docs',
+  site: 'https://unstable-kernel.github.io/docs',
   integrations: [
     starlight({
       title: 'Kernel',
