@@ -1,0 +1,20 @@
+:root {
+  --sl-color-accent-low: #1a3a2a;
+  --sl-color-accent: #4ade80;
+  --sl-color-accent-high: #bbf7d0;
+  --sl-color-white: #f0fdf4;
+  --sl-color-gray-1: #dcfce7;
+  --sl-color-gray-2: #86efac;
+  --sl-color-gray-3: #4ade80;
+  --sl-color-gray-4: #166534;
+  --sl-color-gray-5: #14532d;
+  --sl-color-gray-6: #052e16;
+  --sl-color-black: #022c22;
+  --sl-font: system-ui, -apple-system, sans-serif;
+}
+
+[data-theme='light'] {
+  --sl-color-accent-low: #dcfce7;
+  --sl-color-accent: #16a34a;
+  --sl-color-accent-high: #052e16;
+}
