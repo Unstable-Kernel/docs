@@ -3,379 +3,434 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kernel - Documentation</title>
+  <title>Kernel / Unstable Kernel</title>
   <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #060a0d;
-      --surface: #0c1117;
-      --border: rgba(74, 222, 128, 0.08);
-      --text: #c8d6e0;
-      --text-dim: #5a7080;
-      --accent: #4ade80;
-      --accent-dim: rgba(74, 222, 128, 0.12);
-      --warm: #f59e0b;
-      --blue: #60a5fa;
-      --purple: #a78bfa;
-      --red: #f87171;
-      --serif: 'Instrument Serif', Georgia, serif;
-      --sans: 'DM Sans', system-ui, sans-serif;
+      --void: #030508;
+      --deep: #080d14;
+      --surface: #0d1520;
+      --border: rgba(56, 189, 126, 0.06);
+      --glow: rgba(56, 189, 126, 0.15);
+      --text: #94a3b8;
+      --text-bright: #e2e8f0;
+      --accent: #38bd7e;
+      --accent-hot: #5eead4;
+      --neural: #6366f1;
+      --bio: #a3e635;
+      --warn: #fb923c;
+      --display: 'Playfair Display', Georgia, serif;
+      --heading: 'Syne', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --body: 'Syne', sans-serif;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html { scroll-behavior: smooth; }
+
     body {
-      background: var(--bg);
+      background: var(--void);
       color: var(--text);
-      font-family: var(--sans);
+      font-family: var(--body);
+      font-weight: 400;
       line-height: 1.7;
       overflow-x: hidden;
     }
 
-    /* Grain overlay */
-    body::before {
+    /* Noise grain */
+    body::after {
       content: '';
       position: fixed;
       inset: 0;
-      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
       pointer-events: none;
       z-index: 9999;
     }
 
-    .container { max-width: 900px; margin: 0 auto; padding: 0 32px; }
+    /* Neural grid background */
+    .neural-bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(99, 102, 241, 0.04), transparent),
+        radial-gradient(ellipse 60% 80% at 80% 60%, rgba(56, 189, 126, 0.03), transparent);
+      pointer-events: none;
+    }
 
-    /* Header */
-    header {
-      padding: 48px 0 80px;
-      border-bottom: 1px solid var(--border);
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 1; }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 0;
       position: relative;
     }
 
-    header::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 120px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    }
-
-    .logo-row {
-      display: flex;
+    .hero-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-
-    .logo-row img { width: 40px; height: 40px; border-radius: 8px; }
-
-    .logo-row span {
-      font-family: var(--serif);
-      font-size: 24px;
-      color: #fff;
-      letter-spacing: -0.5px;
-    }
-
-    h1 {
-      font-family: var(--serif);
-      font-size: clamp(42px, 6vw, 64px);
-      color: #fff;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      letter-spacing: -1.5px;
-    }
-
-    h1 em {
-      color: var(--accent);
-      font-style: italic;
-    }
-
-    .subtitle {
-      font-size: 17px;
-      color: var(--text-dim);
-      max-width: 560px;
-      line-height: 1.8;
-    }
-
-    .nav-links {
-      display: flex;
       gap: 8px;
-      margin-top: 32px;
-      flex-wrap: wrap;
-    }
-
-    .nav-links a {
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .nav-links a.primary {
-      background: var(--accent);
-      color: #000;
-    }
-
-    .nav-links a.secondary {
-      background: var(--accent-dim);
-      color: var(--accent);
-      border: 1px solid rgba(74, 222, 128, 0.2);
-    }
-
-    .nav-links a:hover { transform: translateY(-1px); }
-
-    /* Sections */
-    section {
-      padding: 72px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    section:last-child { border-bottom: none; }
-
-    h2 {
-      font-family: var(--serif);
-      font-size: 32px;
-      color: #fff;
-      margin-bottom: 12px;
-      letter-spacing: -0.5px;
-    }
-
-    h2 .tag {
-      font-family: var(--sans);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      margin-left: 12px;
-      vertical-align: middle;
-    }
-
-    h3 {
-      font-size: 18px;
-      color: #fff;
-      margin: 32px 0 12px;
-      font-weight: 600;
-    }
-
-    p { margin-bottom: 16px; }
-
-    /* Cards */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-      margin-top: 24px;
-    }
-
-    .card {
+      padding: 6px 14px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      transition: border-color 0.3s, transform 0.2s;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 32px;
+      width: fit-content;
+      animation: fadeIn 0.8s ease both;
     }
 
-    .card:hover {
-      border-color: rgba(74, 222, 128, 0.25);
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    .hero h1 {
+      font-family: var(--display);
+      font-size: clamp(48px, 7vw, 80px);
+      color: #fff;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .hero h1 .italic {
+      font-style: italic;
+      font-weight: 400;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hot));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      max-width: 520px;
+      line-height: 1.8;
+      color: var(--text);
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 40px;
+      animation: fadeUp 0.8s ease 0.3s both;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-family: var(--heading);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 0 20px rgba(56, 189, 126, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 30px rgba(56, 189, 126, 0.35);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-bright);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
       transform: translateY(-2px);
     }
 
-    .card h4 {
+    /* Hero image */
+    .hero-visual {
+      position: absolute;
+      right: -60px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 320px;
+      opacity: 0.12;
+      filter: hue-rotate(10deg);
+      animation: float 8s ease-in-out infinite;
+    }
+
+    /* Sections */
+    section {
+      padding: 100px 0;
+      border-top: 1px solid var(--border);
+      position: relative;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      opacity: 0.7;
+    }
+
+    h2 {
+      font-family: var(--heading);
+      font-size: clamp(28px, 4vw, 38px);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    h3 {
+      font-family: var(--heading);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin: 28px 0 8px;
+    }
+
+    p + p { margin-top: 12px; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hot); }
+
+    /* Experiment cards */
+    .experiments {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .exp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exp-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .exp-card:hover {
+      border-color: rgba(56, 189, 126, 0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    }
+
+    .exp-card:hover::before { opacity: 1; }
+
+    .exp-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      opacity: 0.6;
+      margin-bottom: 10px;
+    }
+
+    .exp-card h4 {
+      font-family: var(--heading);
       font-size: 15px;
+      font-weight: 700;
       color: #fff;
       margin-bottom: 8px;
-      font-weight: 600;
     }
 
-    .card p {
+    .exp-card p {
       font-size: 13px;
-      color: var(--text-dim);
-      margin: 0;
+      color: var(--text);
       line-height: 1.6;
     }
 
-    .card .icon {
-      width: 32px;
-      height: 32px;
+    /* Repo table */
+    .repo-grid {
+      display: grid;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .repo-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 100px;
+      padding: 12px 16px;
       border-radius: 8px;
-      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
       align-items: center;
-      justify-content: center;
-      margin-bottom: 12px;
-      font-size: 16px;
-    }
-
-    /* Code blocks */
-    pre {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      overflow-x: auto;
       font-size: 13px;
-      line-height: 1.6;
-      margin: 16px 0;
+      transition: border-color 0.2s;
     }
 
-    code { font-family: 'JetBrains Mono', monospace; }
+    .repo-row:hover { border-color: rgba(56, 189, 126, 0.15); }
 
-    /* Architecture diagram */
-    .arch-diagram {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 32px;
-      margin: 24px 0;
-      text-align: center;
-      font-family: var(--sans);
-      font-size: 12px;
-      color: var(--text-dim);
-    }
-
-    .arch-boxes {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      margin: 20px 0;
-    }
-
-    .arch-box {
-      padding: 16px 24px;
-      border-radius: 8px;
-      border: 1px solid;
+    .repo-name {
+      font-family: var(--mono);
       font-weight: 500;
+      color: var(--accent);
+    }
+
+    .repo-desc { color: var(--text); }
+
+    .repo-tech {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text);
+      opacity: 0.5;
+      text-align: right;
+    }
+
+    /* Theory */
+    .formula {
+      font-family: var(--mono);
       font-size: 13px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin: 8px 0;
+      color: var(--accent-hot);
     }
-
-    /* Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 16px 0;
-      font-size: 13px;
-    }
-
-    th, td {
-      padding: 10px 14px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-
-    th { color: var(--text-dim); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-    td { color: var(--text); }
 
     /* Footer */
     footer {
-      padding: 48px 0;
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
       text-align: center;
-      color: var(--text-dim);
       font-size: 13px;
+      color: var(--text);
+      opacity: 0.6;
     }
-
-    footer a { color: var(--accent); text-decoration: none; }
 
     /* Animations */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes float { 0%, 100% { transform: translateY(-50%) rotate(0deg); } 50% { transform: translateY(-52%) rotate(1deg); } }
 
-    section { animation: fadeUp 0.6s ease-out both; }
-    section:nth-child(2) { animation-delay: 0.1s; }
-    section:nth-child(3) { animation-delay: 0.2s; }
-    section:nth-child(4) { animation-delay: 0.3s; }
+    @media (max-width: 768px) {
+      .experiments { grid-template-columns: 1fr; }
+      .repo-row { grid-template-columns: 1fr; gap: 4px; }
+      .repo-tech { text-align: left; }
+      .hero-visual { display: none; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo-row">
-        <img src="./favicon-32.png" alt="Kernel" />
-        <span>Unstable Kernel</span>
-      </div>
-      <h1>Nature-inspired<br/><em>autonomous intelligence</em></h1>
-      <p class="subtitle">
-        A simulation-first platform where distributed agents coordinate through local rules, producing emergent global intelligence. Built in Rust, visualized in the browser.
+  <div class="neural-bg"></div>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-badge">Autonomous Systems Research</div>
+      <h1>Coordination<br/>through <span class="italic">emergence</span></h1>
+      <p class="hero-sub">
+        A simulation-first platform where distributed agents coordinate through local rules
+        -- inspired by neural networks, fungal mycelium, and swarm biology -- producing
+        emergent global intelligence.
       </p>
-      <div class="nav-links">
-        <a href="https://unstable-kernel.github.io/visualization/" class="primary">Live Simulation</a>
-        <a href="https://unstable-kernel.github.io/org-graph/" class="secondary">Org Graph</a>
-        <a href="https://github.com/Unstable-Kernel" class="secondary">GitHub</a>
+      <div class="hero-actions">
+        <a href="https://unstable-kernel.github.io/visualization/" class="btn btn-primary">Live Simulation</a>
+        <a href="https://unstable-kernel.github.io/org-graph/" class="btn btn-ghost">System Map</a>
+        <a href="https://github.com/Unstable-Kernel" class="btn btn-ghost">Source</a>
       </div>
-    </header>
-
-    <section>
-      <h2>Architecture</h2>
-      <p>Kernel runs entirely in the browser. Rust compiled to WebAssembly handles the simulation at 60fps. Three.js renders thousands of agents in real-time.</p>
-      <div class="arch-diagram">
-        <div style="color: var(--text-dim); margin-bottom: 12px;">BROWSER</div>
-        <div class="arch-boxes">
-          <div class="arch-box" style="border-color: var(--accent); color: var(--accent);">Simulation Core<br/><small>Rust / WASM</small></div>
-          <div class="arch-box" style="border-color: var(--blue); color: var(--blue);">Visualization<br/><small>Three.js / WebGL</small></div>
-          <div class="arch-box" style="border-color: var(--warm); color: var(--warm);">Config Layer<br/><small>TOML experiments</small></div>
-        </div>
-        <div style="margin-top: 12px;">Shared Memory Buffer (Float32Array)</div>
-      </div>
+      <img src="./hero.png" class="hero-visual" alt="" />
     </section>
 
     <section>
-      <h2>Experiments</h2>
-      <div class="card-grid">
-        <div class="card">
-          <div class="icon" style="background: var(--accent-dim); color: var(--accent);">01</div>
+      <div class="section-label">// architecture</div>
+      <h2>How the brain works</h2>
+      <p>Like biological neural systems, Kernel has no central controller. Intelligence emerges from thousands of simple agents following local rules -- each one a neuron in a distributed brain.</p>
+      <p>The simulation core is Rust compiled to WebAssembly. Three.js renders the emergent patterns in real-time. TOML configs define experiments without code changes.</p>
+
+      <h3>Signal Flow</h3>
+      <p>Every frame: spatial hash rebuild, behavior computation (boids + chemotaxis + pursuit/flee), movement integration, pheromone diffusion, energy lifecycle. All in under 16ms.</p>
+    </section>
+
+    <section>
+      <div class="section-label">// experiments</div>
+      <h2>Biological simulations</h2>
+      <div class="experiments">
+        <div class="exp-card">
+          <div class="exp-num">01</div>
           <h4>Flocking</h4>
-          <p>Reynolds boids: separation, alignment, cohesion. 1000+ agents self-organize into coherent flocks from purely local rules.</p>
+          <p>Reynolds boids. 1000+ agents self-organize into coherent flocks from three local rules. No leader. No plan. Pure emergence.</p>
         </div>
-        <div class="card">
-          <div class="icon" style="background: rgba(245, 158, 11, 0.12); color: var(--warm);">02</div>
+        <div class="exp-card">
+          <div class="exp-num">02</div>
           <h4>Pheromone Paths</h4>
-          <p>Ant-colony optimization. Agents deposit chemical trails that diffuse and evaporate, forming efficient transport networks.</p>
+          <p>Ant-colony optimization. Chemical trails diffuse and evaporate, forming efficient transport networks through stigmergy.</p>
         </div>
-        <div class="card">
-          <div class="icon" style="background: rgba(248, 113, 113, 0.12); color: var(--red);">03</div>
+        <div class="exp-card">
+          <div class="exp-num">03</div>
           <h4>Ecosystem</h4>
-          <p>Predator-prey dynamics with energy, reproduction, and bidirectional mutation. Populations oscillate naturally.</p>
+          <p>Predator-prey with energy, reproduction, and bidirectional mutation. Populations oscillate via Lotka-Volterra dynamics.</p>
         </div>
-        <div class="card">
-          <div class="icon" style="background: rgba(167, 139, 250, 0.12); color: var(--purple);">04</div>
+        <div class="exp-card">
+          <div class="exp-num">04</div>
           <h4>Mycelium Network</h4>
-          <p>Adaptive graph where signals strengthen active edges and prune idle ones. Self-organizing communication infrastructure.</p>
+          <p>Adaptive graph where signals strengthen active edges and prune idle ones. Hebbian learning in a fungal topology.</p>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Repositories</h2>
-      <table>
-        <thead><tr><th>Repo</th><th>Purpose</th><th>Stack</th></tr></thead>
-        <tbody>
-          <tr><td><strong>kernel</strong></td><td>Core coordination engine, ECS world</td><td>Rust, WASM</td></tr>
-          <tr><td><strong>sim</strong></td><td>Spatial hash, movement, environment</td><td>Rust</td></tr>
-          <tr><td><strong>signal</strong></td><td>Pheromone grid, diffusion, chemotaxis</td><td>Rust</td></tr>
-          <tr><td><strong>swarm</strong></td><td>Boids flocking, predator-prey</td><td>Rust</td></tr>
-          <tr><td><strong>mycelium</strong></td><td>Adaptive graph network</td><td>Rust</td></tr>
-          <tr><td><strong>visualization</strong></td><td>Browser rendering layer</td><td>TypeScript, Three.js</td></tr>
-          <tr><td><strong>experiments</strong></td><td>TOML experiment configs</td><td>TOML</td></tr>
-          <tr><td><strong>research</strong></td><td>Theory, proofs, biology</td><td>Markdown</td></tr>
-        </tbody>
-      </table>
+      <div class="section-label">// system</div>
+      <h2>Repository structure</h2>
+      <div class="repo-grid">
+        <div class="repo-row"><span class="repo-name">kernel</span><span class="repo-desc">Core coordination engine, ECS world</span><span class="repo-tech">Rust, WASM</span></div>
+        <div class="repo-row"><span class="repo-name">sim</span><span class="repo-desc">Spatial hash, movement, environment</span><span class="repo-tech">Rust</span></div>
+        <div class="repo-row"><span class="repo-name">signal</span><span class="repo-desc">Pheromone grid, diffusion, chemotaxis</span><span class="repo-tech">Rust</span></div>
+        <div class="repo-row"><span class="repo-name">swarm</span><span class="repo-desc">Boids flocking, predator-prey</span><span class="repo-tech">Rust</span></div>
+        <div class="repo-row"><span class="repo-name">mycelium</span><span class="repo-desc">Adaptive graph network</span><span class="repo-tech">Rust</span></div>
+        <div class="repo-row"><span class="repo-name">visualization</span><span class="repo-desc">Browser rendering layer</span><span class="repo-tech">Three.js</span></div>
+        <div class="repo-row"><span class="repo-name">experiments</span><span class="repo-desc">TOML experiment configs</span><span class="repo-tech">TOML</span></div>
+        <div class="repo-row"><span class="repo-name">research</span><span class="repo-desc">Theory, proofs, biology</span><span class="repo-tech">Markdown</span></div>
+      </div>
     </section>
 
     <section>
-      <h2>Theory <span class="tag" style="background: rgba(167, 139, 250, 0.12); color: var(--purple);">Math</span></h2>
-      <h3>Key Results</h3>
-      <p>Flock equilibrium distance: <code>d* = r_sep * sqrt(w_s / w_c)</code></p>
-      <p>Signal half-life: <code>t_half = ln(2) / evaporation_rate</code></p>
-      <p>Trail persistence: <code>agent_density > evaporation / deposition</code></p>
-      <p>Full proofs in <a href="https://github.com/Unstable-Kernel/research/blob/main/theory.md" style="color: var(--accent);">research/theory.md</a></p>
+      <div class="section-label">// theory</div>
+      <h2>Mathematical foundations</h2>
+      <h3>Flock Equilibrium</h3>
+      <div class="formula">d* = r_sep * sqrt(w_separation / w_cohesion)</div>
+      <h3>Signal Half-life</h3>
+      <div class="formula">t_half = ln(2) / evaporation_rate</div>
+      <h3>Trail Persistence</h3>
+      <div class="formula">agent_density > evaporation / deposition_strength</div>
+      <p style="margin-top: 16px;">Full proofs and stability analysis in <a href="https://github.com/Unstable-Kernel/research/blob/main/theory.md">research/theory.md</a></p>
     </section>
 
     <footer>
