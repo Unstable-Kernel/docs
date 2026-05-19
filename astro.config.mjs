@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 export default defineConfig({
-  site: 'https://unstable-kernel.github.io/docs',
+  base: '/docs/',
   integrations: [
     starlight({
       title: 'Kernel',
@@ -26,6 +26,7 @@ export default defineConfig({
         { label: 'Roadmap', link: '/roadmap/' },
       ],
       customCss: ['./src/styles/custom.css'],
+      pagefind: false,
     }),
   ],
 });
